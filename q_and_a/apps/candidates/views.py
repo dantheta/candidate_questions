@@ -14,7 +14,11 @@ class CandidateAuthenticateView(BaseAuthView):
         if (not self.request.user.is_authenticated()
                 or not hasattr(self.request.user, 'candidate_id')):
             self.login()
-        return self.request.user.candidate.get_absolute_url()
+        candidate = self.request.user.candidate
+        if not candidate.participating:
+            candidate.participating = True
+            candidate.save()
+        return candidate.get_absolute_url()
 
 class CandidateQuestionsView(TemplateView):
     template_name = "candidates/candidate_questions.html"
