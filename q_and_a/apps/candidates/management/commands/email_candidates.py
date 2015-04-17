@@ -20,6 +20,10 @@ class Command(BaseCommand):
         reply = raw_input(u'this will e-mail {} candidates, are you sure? [y/n] '.format(len(candidates_with_email)))
         if not reply or reply[0].lower() != u'y':
             return
-        messages = [make_email(c) for c in candidates_with_email]
         print 'sending e-mails'
-        get_connection().send_messages(messages)
+        conn = get_connection()
+        for c in candidates_with_email:
+            print 'emailing', c
+            msg = make_email(c)
+            conn.send_messages([msg])
+        conn.close()
