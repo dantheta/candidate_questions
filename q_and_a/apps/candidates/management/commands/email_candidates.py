@@ -4,14 +4,14 @@ from django.core.mail import EmailMultiAlternatives, get_connection
 from django.template.loader import render_to_string
 
 def make_email(candidate):
-    subject = 'Questions for candidates in the 2015 election'
-    email_from = 'questions@campaignreply.org'
+    subject = u'Questions for ' + candidate.constituency_name + u' candidates'
+    email_from = u'questions@campaignreply.org'
     to = candidate.contact_address
 
     text_content = render_to_string('candidates/email.txt', {'candidate': candidate})
     html_content = render_to_string('candidates/email.html', {'candidate': candidate})
     msg = EmailMultiAlternatives(subject, text_content, email_from, [to])
-    msg.attach_alternative(html_content, "text/html")
+    msg.attach_alternative(html_content, 'text/html')
     return msg
 
 class Command(BaseCommand):
