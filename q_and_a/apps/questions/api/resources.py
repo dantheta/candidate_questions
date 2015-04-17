@@ -1,6 +1,7 @@
 import json
+from tastypie import fields
 from tastypie.resources import ModelResource
-from questions.models import Answer
+from questions.models import Question, Answer
 from django.core.serializers.json import DjangoJSONEncoder
 from tastypie.serializers import Serializer
 
@@ -20,3 +21,12 @@ class AnswerResource(ModelResource):
         queryset = Answer.objects.all()
         allowed_methods = ['get']
         serializer = PrettyJSONSerializer()
+
+class QuestionResource(ModelResource):
+    answers = fields.ToManyField(AnswerResource, 'answer_set', full=True, null=True)
+
+    class Meta:
+        queryset = Question.objects.all()
+        allowed_methods = ['get']
+        serializer = PrettyJSONSerializer()
+        excludes = ['choices', 'type']
