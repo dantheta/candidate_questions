@@ -26,7 +26,7 @@ def api(request, question_id):
         'id': question.id,
         'organisation': {'name': org.name, 'id': org.id},
         'question': question.question,
-        'answers': {int(a.candidate.popit_id): a.answer for a in question.answer_set.all()},
+        'answers': {int(a.candidate.popit_id): a.answer for a in question.answer_set.all() if a.answer},
     }, indent=2)
     return HttpResponse(data, content_type='application/json')
 
