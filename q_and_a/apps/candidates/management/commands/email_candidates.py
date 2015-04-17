@@ -21,9 +21,8 @@ class Command(BaseCommand):
         if not reply or reply[0].lower() != u'y':
             return
         print 'sending e-mails'
-        conn = get_connection()
-        for c in candidates_with_email:
-            print 'emailing', c
-            msg = make_email(c)
-            conn.send_messages([msg])
-        conn.close()
+        with get_connection() as conn:
+            for c in candidates_with_email:
+                print 'emailing', c
+                msg = make_email(c)
+                conn.send_messages([msg])
