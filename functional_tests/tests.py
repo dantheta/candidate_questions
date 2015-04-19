@@ -46,6 +46,34 @@ class NewVisitorTest(unittest.TestCase):
             any(link.get_attribute('href') == 'mailto:questions@campaignreply.org' for link in links)
         )
 
-        
+    def test_view_answers(self):
+        # So that I can decide for whom to vote
+        # As a voter
+        # I want to read the answers given by candidates in my constituency
+
+        # I visit the homepage and am invited to enter my postcode
+        self.browser.get('http://localhost:8000')
+        inputbox = self.browser.find_element_by_id('id_postcode')
+        self.assertEqual(
+            inputbox.get_attribute('placeholder'),
+            'Enter your postcode'
+        )
+
+        # I type in my postcode
+        inputbox.send_keys('bn1 1ee')
+
+        # When I hit enter, the page updates, and it now shows the constituency for my postcode
+        inputbox.send_keys(Keys.ENTER)
+        constituency = self.browser.find_element_by_id('id_constituency')
+        heading = constituency.find_elements_by_tag_name('h2')
+        self.assertTrue(heading.text == 'Brighton Pavilion')
+
+        # I can see a list of candidates standing in my constituency
+        # I can see the questions asked of each candidate
+        # I can see each candidate's answers to each question
+        # I can see which organisation asked each question
+        self.assertFail('Finish the test!')
+
+
 if __name__ == '__main__':
     unittest.main()
