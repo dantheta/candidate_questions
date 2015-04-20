@@ -60,6 +60,14 @@ class NewVisitorTest(unittest.TestCase):
             'Enter your postcode'
         )
 
+        # I type in my friend's postcode to see how the system works
+        inputbox.send_keys('SW1A 0AA')
+        
+        # When I hit enter, the page updates, and it now shows the constituency for my postcode
+        inputbox.send_keys(Keys.ENTER)
+        self.assertIn('Cities of London and Westminster', self.browser.find_element_by_tag_name('h2').text)
+
+        # There is still a text box inviting me to enter another postcode
         # I type in my postcode
         inputbox.send_keys('bn1 1ee')
 
@@ -67,19 +75,15 @@ class NewVisitorTest(unittest.TestCase):
         inputbox.send_keys(Keys.ENTER)
         self.assertIn('Brighton Pavilion', self.browser.find_element_by_tag_name('h2').text)
 
-        # I can see a list of candidates standing in my constituency
-        table = self.browser.find_element_by_id('id_answers_table')
-        rows = table.find_elements_by_tag_name('tr')
-        self.assertTrue(
-            any(row.text == 'Chris Bowers' for row in rows) and
-            any(row.text == 'Nigel Carter' for row in rows) and
-            any(row.text == 'Caroline Lucas' for row in rows) and
-            any(row.text == 'Clarence Mitchell' for row in rows) and
-            any(row.text == 'Howard Pilott' for row in rows) and
-            any(row.text == 'Purna Sen' for row in rows) and
-            any(row.text == 'Nick Yeomans' for row in rows),
-            "Candidates table contents incorrect"
-        )
+        # I can see which candidates are standing in my constituency
+        body_text = self.browser.find_elements_by_tag_name('body').text
+        self.assertIn('Chris Bowers', body_text)
+        self.assertIn('Nigel Carter', body_text)
+        self.assertIn('Caroline Lucas', body_text)
+        self.assertIn('Clarence Mitchell', body_text)
+        self.assertIn('Howard Pilott', body_text)
+        self.assertIn('Purna Sen', body_text)
+        self.assertIn('Nick Yeomans', body_text)
 
         # I can see the questions asked of each candidate
         # I can see each candidate's answers to each question
