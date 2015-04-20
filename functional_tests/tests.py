@@ -1,9 +1,9 @@
+from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-import unittest
 
 
-class NewVisitorTest(unittest.TestCase):
+class NewVisitorTest(LiveServerTestCase):
 
     def setUp(self):
         self.browser = webdriver.Firefox()
@@ -31,7 +31,7 @@ class NewVisitorTest(unittest.TestCase):
         # I want to read a page of explanatory information
 
         # I can see the page title and header mention asking questions of candidates
-        self.browser.get('http://localhost:8000')
+        self.browser.get(self.live_server_url)
         self.assertIn('Ask your candidate', self.browser.title)
         self.check_for_strings_in_page_element('h1', 'Candidate Q&As')
 
@@ -59,7 +59,7 @@ class NewVisitorTest(unittest.TestCase):
         # I want to read the answers given by candidates in my constituency
 
         # I visit the homepage and am invited to enter my postcode
-        self.browser.get('http://localhost:8000')
+        self.browser.get(self.live_server_url)
         inputbox = self.browser.find_element_by_id('id_postcode')
         self.assertEqual(
             inputbox.get_attribute('placeholder'),
@@ -96,7 +96,3 @@ class NewVisitorTest(unittest.TestCase):
         # I can see each candidate's answers to each question
         # I can see which organisation asked each question
         self.assertFail('Finish the test!')
-
-
-if __name__ == '__main__':
-    unittest.main()
