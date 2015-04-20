@@ -12,6 +12,19 @@ class NewVisitorTest(unittest.TestCase):
     def tearDown(self):
         self.browser.quit()
 
+    def check_for_strings_in_page_element(self, element, string_list):
+        element_text = self.browser.find_element_by_tag_name(element).text
+        self.assertTrue(
+            all(strings in element_text for strings in string_list),
+            '<%s> element did not contain one or more of the following strings: %s' % (element, string_list)
+        )
+
+    def check_link_appears_on_page(self, href):
+        links = self.browser.find_elements_by_tag_name('a')
+        self.assertTrue(
+            any(link.get_attribute('href') == href for link in links)
+        )
+
     def test_about_information(self):
         # So that I can learn more about this website
         # As a voter
@@ -20,32 +33,25 @@ class NewVisitorTest(unittest.TestCase):
         # I can see the page title and header mention asking questions of candidates
         self.browser.get('http://localhost:8000')
         self.assertIn('Ask your candidate', self.browser.title)
-        header_text = self.browser.find_element_by_tag_name('h1').text
-        self.assertIn('Candidate Q&As', header_text)
+        self.check_for_strings_in_page_element('h1', 'Candidate Q&As')
 
         # I can see that the site is specific to the UK general election 2015
-        self.assertIn('UK general election 2015', self.browser.find_element_by_tag_name('body').text)
-
         # I can see that the site is a prototype
-        self.assertIn('prototype', self.browser.find_element_by_tag_name('body').text)
+        self.check_for_strings_in_page_element('body', {
+            'UK general election 2015',
+            'prototype',
+        })
 
         # I can see who made the site
-        links = self.browser.find_elements_by_tag_name('a')
-        self.assertTrue(
-            any(link.get_attribute('href') == 'http://89up.org/' for link in links) and
-            any(link.get_attribute('href') == 'https://www.openrightsgroup.org/' for link in links) and
-            any(link.get_attribute('href') == 'https://democracyclub.org.uk/' for link in links)
-        )
+        self.check_link_appears_on_page('http://89up.org/')
+        self.check_link_appears_on_page('https://www.openrightsgroup.org/')
+        self.check_link_appears_on_page('https://democracyclub.org.uk/')
 
         # I can find the source code for the site
-        self.assertTrue(
-            any(link.get_attribute('href') == 'https://github.com/DemocracyClub/candidate_questions/' for link in links)
-        )
+        self.check_link_appears_on_page('https://github.com/DemocracyClub/candidate_questions/')
 
         # I can see an email address to write to with quesitons or comments
-        self.assertTrue(
-            any(link.get_attribute('href') == 'mailto:questions@campaignreply.org' for link in links)
-        )
+        self.check_link_appears_on_page('mailto:questions@campaignreply.org')
 
     def test_view_answers(self):
         # So that I can decide for whom to vote
@@ -62,10 +68,10 @@ class NewVisitorTest(unittest.TestCase):
 
         # I type in my friend's postcode to see how the system works
         inputbox.send_keys('SW1A 0AA')
-        
+
         # When I hit enter, the page updates, and it now shows the constituency for my postcode
         inputbox.send_keys(Keys.ENTER)
-        self.assertIn('Cities of London and Westminster', self.browser.find_element_by_tag_name('h2').text)
+        self.check_for_strings_in_page_element('h2', 'Cities of London and Westminster')
 
         # There is still a text box inviting me to enter another postcode
         # I type in my postcode
@@ -73,17 +79,18 @@ class NewVisitorTest(unittest.TestCase):
 
         # When I hit enter, the page updates, and it now shows the constituency for my postcode
         inputbox.send_keys(Keys.ENTER)
-        self.assertIn('Brighton Pavilion', self.browser.find_element_by_tag_name('h2').text)
+        self.check_for_strings_in_page_element('h2', 'Brighton Pavilion')
 
         # I can see which candidates are standing in my constituency
-        body_text = self.browser.find_elements_by_tag_name('body').text
-        self.assertIn('Chris Bowers', body_text)
-        self.assertIn('Nigel Carter', body_text)
-        self.assertIn('Caroline Lucas', body_text)
-        self.assertIn('Clarence Mitchell', body_text)
-        self.assertIn('Howard Pilott', body_text)
-        self.assertIn('Purna Sen', body_text)
-        self.assertIn('Nick Yeomans', body_text)
+        self.check_for_strings_in_page_element('body', {
+            'Chris Bowers',
+            'Nigel Carter',
+            'Caroline Lucas',
+            'Clarence Mitchell',
+            'Howard Pilott',
+            'Purna Sen',
+            'Nick Yeomans',
+        })
 
         # I can see the questions asked of each candidate
         # I can see each candidate's answers to each question
