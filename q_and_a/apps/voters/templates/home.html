@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
 {% block jumbotron %}
-<div class="jumbotron">
-  <div class="container">
-    <h1>Candidate Q&amp;As #GE2015</h1>
-    <p>This is a prototype of a Q&amp;A app for organisations to ask questions of Prospective Parliamentary Candidates in the UK general election 2015.</p>
-    <p>The code is under active development. More details are available on <a href="https://github.com/DemocracyClub/candidate_questions/">Github</a>.</p>
-  </div>
-</div>
+<h1>Candidate Q&amp;As #GE2015</h1>
+<p>This is a prototype of a Q&amp;A app for organisations to ask questions of Prospective Parliamentary Candidates in the UK general election 2015.</p>
+<p>The code is under active development. More details are available on <a href="https://github.com/DemocracyClub/candidate_questions/">Github</a>.</p>
 {% endblock jumbotron %}
+
+{% block content %}
+<input id="id_postcode" placeholder="Enter your postcode" />
+{% endblock content %}
