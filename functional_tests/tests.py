@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 import unittest
 
 
@@ -69,6 +70,19 @@ class NewVisitorTest(unittest.TestCase):
         self.assertTrue(heading.text == 'Brighton Pavilion')
 
         # I can see a list of candidates standing in my constituency
+        table = self.browser.find_element_by_id('id_answers_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertTrue(
+            any(row.text == 'Chris Bowers' for row in rows) and
+            any(row.text == 'Nigel Carter' for row in rows) and
+            any(row.text == 'Caroline Lucas' for row in rows) and
+            any(row.text == 'Clarence Mitchell' for row in rows) and
+            any(row.text == 'Howard Pilott' for row in rows) and
+            any(row.text == 'Purna Sen' for row in rows) and
+            any(row.text == 'Nick Yeomans' for row in rows),
+            "Candidates table contents incorrect"
+        )
+
         # I can see the questions asked of each candidate
         # I can see each candidate's answers to each question
         # I can see which organisation asked each question
