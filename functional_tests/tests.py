@@ -65,9 +65,7 @@ class NewVisitorTest(unittest.TestCase):
 
         # When I hit enter, the page updates, and it now shows the constituency for my postcode
         inputbox.send_keys(Keys.ENTER)
-        constituency = self.browser.find_element_by_id('id_constituency')
-        heading = constituency.find_elements_by_tag_name('h2')
-        self.assertTrue(heading.text == 'Brighton Pavilion')
+        self.assertIn('Brighton Pavilion', self.browser.find_element_by_tag_name('h2').text)
 
         # I can see a list of candidates standing in my constituency
         table = self.browser.find_element_by_id('id_answers_table')
