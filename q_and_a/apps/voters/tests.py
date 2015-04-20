@@ -17,3 +17,17 @@ class HomePageTest(TestCase):
         response = HomePageView(request)
         expected_html = render_to_string('home.html')
         self.assertEqual(response.content.decode(), expected_html)
+
+    def test_homepage_can_save_a_POST_request(self):
+        request = HttpRequest()
+        request.method = 'POST'
+        request.POST['postcode'] = 'bn1 1ee'
+
+        response = HomePageView(request)
+
+        self.assertIn('Brighton Pavilion', response.content.decode())
+        expected_html = render_to_string(
+            'home.html',
+            {'constituency': 'Brighton Pavilion'}
+        )
+        self.assertEqual(response.content.decode(), expected_html)

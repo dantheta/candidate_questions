@@ -7,5 +7,9 @@
 {% endblock jumbotron %}
 
 {% block content %}
-<input id="id_postcode" placeholder="Enter your postcode" />
+<form method="POST">
+  <input name="postcode" id="id_postcode" placeholder="Enter your postcode" />
+  {% csrf_token %}
+</form>
+<h2>{{ constituency }}</h2>
 {% endblock content %}
