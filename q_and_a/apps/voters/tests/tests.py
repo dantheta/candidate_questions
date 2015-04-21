@@ -1,14 +1,15 @@
 from django.core.urlresolvers import resolve
+from django.http import HttpRequest
 from django.template.loader import render_to_string
 from django.test import TestCase
-from django.http import HttpRequest
 
-from voters.views import HomePageView
 from voters.models import Constituency
+from voters.views import HomePageView
+
 
 class HomePageTest(TestCase):
 
-    def test_root_url_resolves_to_homepage_view(self):
+    def test_uses_homepage_template(self):
         found = resolve('/')
         self.assertEqual(found.func, HomePageView)
 
@@ -18,51 +19,52 @@ class HomePageTest(TestCase):
         expected_html = render_to_string('home.html')
         self.assertEqual(response.content.decode(), expected_html)
 
-    def test_homepage_can_save_a_POST_request(self):
-        request = HttpRequest()
-        request.method = 'POST'
-        request.POST['postcode'] = 'bn1 1ee'
 
-        response = HomePageView(request)
+class LookUpConstituencyTest(TestCase):
+
+    def test_homepage_can_save_a_POST_request(self):
+        response = self.client.post(
+            '/',
+            data={'postcode': 'bn1 1ee'}
+        )
 
         self.assertEqual(Constituency.objects.count(), 1)
         new_wmc = Constituency.objects.first()
         self.assertEqual(new_wmc.name, 'Brighton, Pavilion')
 
-    def test_homepage_redirects_after_POST(self):
-        request = HttpRequest()
-        request.method = 'POST'
-        request.POST['postcode'] = 'bn1 1ee'
+    def test_homepage_redirects_to_constituency_view(self):
+        response = self.client.post(
+            '/',
+            data={'postcode': 'bn1 1ee'}
+        )
 
-        response = HomePageView(request)
-
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'], '/constituencies/my-constituency/')
+        new_wmc = Constituency.objects.first()
+        self.assertRedirects(response, '/constituencies/%d/' % (new_wmc.constituency_id,))
 
     def test_homepage_only_saves_constituency_when_necessary(self):
-        request = HttpRequest()
-        HomePageView(request)
+        response = self.client.get('/')
         self.assertEqual(Constituency.objects.count(), 0)
 
     def test_homepage_only_saves_new_constituencies(self):
-        request = HttpRequest()
-        request.method = 'POST'
-        request.POST['postcode'] = 'bn1 1ee'
-
-        response = HomePageView(request)
-        response2 = HomePageView(request)
+        response = self.client.post(
+            '/',
+            data={'postcode': 'bn1 1ee'}
+        )
+        response2 = self.client.post(
+            '/',
+            data={'postcode': 'bn1 1ee'}
+        )
 
         self.assertEqual(Constituency.objects.count(), 1)
 
     def test_homepage_handles_invalid_input(self):
-        request = HttpRequest()
-        request.method = 'POST'
-        request.POST['postcode'] = 'not a postcode'
-
-        response = HomePageView(request)
+        response = self.client.post(
+            '/',
+            data={'postcode': 'not a postcode'}
+        )
 
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'], '/')
+        self.assertRedirects(response, '/')
 
 
 class ConstituencyModelTest(TestCase):
@@ -89,12 +91,16 @@ class ConstituencyModelTest(TestCase):
 class ConstituencyViewTest(TestCase):
 
     def test_uses_constituency_template(self):
-        Constituency.objects.create(constituency_id=1, name="My Constituency")
-        response = self.client.get('/constituencies/my-constituency/')
+        wmc = Constituency.objects.create(constituency_id=1, name='My Constituency')
+        response = self.client.get('/constituencies/%d/' % (wmc.constituency_id,))
         self.assertTemplateUsed(response, 'constituency.html')
 
-    def test_constituency_page_displays_constituency_name(self):
-        Constituency.objects.create(constituency_id=1, name="My Constituency")
-        response = self.client.get('/constituencies/my-constituency/')
+    def test_displays_correct_constituency_name(self):
+        correct_wmc = Constituency.objects.create(constituency_id=1, name='Correct Constituency')
+        other_wmc = Constituency.objects.create(constituency_id=2, name='Other Constituency')
 
-        self.assertContains(response, 'My Constituency')
+        response = self.client.get('/constituencies/%d/' % (correct_wmc.constituency_id,))
+
+        self.assertContains(response, 'Correct Constituency')
+        self.assertNotContains(response,'Other Constituency')
+
