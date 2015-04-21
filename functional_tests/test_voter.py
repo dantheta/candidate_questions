@@ -59,8 +59,6 @@ class VoterTest(FunctionalTest):
         page_text = self.browser.find_element_by_tag_name('body').text
         self.assertNotIn('Cties of London and Westminster', page_text)
         
-        self.assertFail('Finish the test!')
-
         # They can see which candidates are standing in their constituency
         self.check_for_strings_in_page_element('body', {
             'Chris Bowers',

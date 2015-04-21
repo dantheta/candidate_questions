@@ -16,7 +16,7 @@ urlpatterns = patterns('',
     url(r'^organisations', include('organisations.urls')),
     url(r'^candidates', include('candidates.urls')),
     url(r'^api/v1/question/(\d+)/?$', 'questions.views.api'),
-    url(r'^constituencies/my-constituency/$',
+    url(r'^constituencies/(.+)/$',
         'voters.views.ConstituencyView',
         name='constituency'
     ),

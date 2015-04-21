@@ -32,20 +32,21 @@ def HomePageView(request):
         postcode = request.POST['postcode']
         wmc_data = ynmp_get_constituency_from_postcode(postcode)
         if wmc_data['status_code'] == 200:
-            wmc_exists = Constituency.objects.filter(
-                constituency_id=wmc_data['constituency_id']
-            )
-            if not wmc_exists:
-                Constituency.objects.create(
+            try:
+                wmc = Constituency.objects.get(
+                    constituency_id=wmc_data['constituency_id']
+                )
+            except Constituency.DoesNotExist:
+                wmc = Constituency.objects.create(
                     constituency_id=wmc_data['constituency_id'],
                     name=wmc_data['name']
                 )
-            return redirect('/constituencies/my-constituency/')
+            return redirect('/constituencies/%d/' % (wmc.constituency_id,))
         else:
             return redirect('/')
 
     return render(request, 'home.html')
 
-def ConstituencyView(request):
-    wmc_name = Constituency.objects.first().name
+def ConstituencyView(request, wmc_id):
+    wmc_name = Constituency.objects.get(constituency_id=wmc_id).name
     return render(request, 'constituency.html', {'constituency': wmc_name})
