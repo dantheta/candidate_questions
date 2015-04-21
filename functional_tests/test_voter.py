@@ -18,23 +18,50 @@ class VoterTest(FunctionalTest):
             'Enter your postcode'
         )
 
-        # I type in my friend's postcode to see how the system works
+        # I type in my postcode
         inputbox.send_keys('SW1A 0AA')
 
-        # When I hit enter, the page updates, and it now shows the constituency for my postcode
+        # When I hit enter, I am taken to a new URL, and now the page 
+        # shows the constituency for my postcode
         inputbox.send_keys(Keys.ENTER)
+        voter1_wmc_url = self.browser.current_url
+        self.assertRegexpMatches(voter1_wmc_url, '/constituencies/.+')
         self.check_for_strings_in_page_element('h2', 'Cities of London and Westminster')
 
-        # There is still a text box inviting me to enter another postcode
-        # I type in my postcode
+        # A second user now visits the site
+
+        ## New browser session to make sure that no information
+        ## from the first user is coming through from cookies etc.
+        self.browser.quit()
+        self.browser = webdriver.Firefox()
+
+        # The second user visits the home page. There is no sign of 
+        # my constituency information.
+        self.browser.get(self.live_server_url)
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn('Cties of London and Westminster', page_text)
+
+        # They type in their postcode and press enter
         inputbox = self.browser.find_element_by_id('id_postcode')
         inputbox.send_keys('bn1 1ee')
-
-        # When I hit enter, the page updates, and it now shows the constituency for my postcode
         inputbox.send_keys(Keys.ENTER)
+        
+        # They are taken to a new URL, and now the page shows the
+        # constituency for their postcode
+        voter2_wmc_url = self.browser.current_url
+        self.assertRegexpMatches(voter2_wmc_url, '/constituencies/.+')
         self.check_for_strings_in_page_element('h2', 'Brighton, Pavilion')
 
-        # I can see which candidates are standing in my constituency
+        # Their URL is different to the URL to which I was taken
+        self.assertNotEqual(voter1_wmc_url, voter2_wmc_url)
+
+        # Again, there is no trace of my constituency on their page
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn('Cties of London and Westminster', page_text)
+        
+        self.assertFail('Finish the test!')
+
+        # They can see which candidates are standing in their constituency
         self.check_for_strings_in_page_element('body', {
             'Chris Bowers',
             'Nigel Carter',
@@ -48,4 +75,3 @@ class VoterTest(FunctionalTest):
         # I can see the questions asked of each candidate
         # I can see each candidate's answers to each question
         # I can see which organisation asked each question
-        self.assertFail('Finish the test!')
