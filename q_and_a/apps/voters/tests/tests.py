@@ -1,5 +1,3 @@
-from mock import patch
-
 from django.core.urlresolvers import resolve
 from django.template.loader import render_to_string
 from django.test import TestCase
@@ -27,24 +25,9 @@ class HomePageTest(TestCase):
 
         response = HomePageView(request)
 
-        self.assertIn('Brighton Pavilion', response.content.decode())
+        self.assertIn('Brighton, Pavilion', response.content.decode())
         expected_html = render_to_string(
             'home.html',
-            {'constituency': 'Brighton Pavilion'}
+            {'constituency': 'Brighton, Pavilion'}
         )
         self.assertEqual(response.content.decode(), expected_html)
-
-    @patch('voters.views.ynmp_get_constituency_from_postcode')
-    def test_homepage_can_look_up_constituency_from_postcode(
-            self, mock_ynmp_get_constituency_from_postcode
-        ):
-        mock_ynmp_get_constituency_from_postcode.return_value = None
-        request = HttpRequest()
-        request.method = 'POST'
-        request.POST['postcode'] = 'SW1A 1AA'
-
-        response = HomePageView(request)
-
-        mock_ynmp_get_constituency_from_postcode.assert_called_once_with('SW1A 1AA')
-
-        # TODO: Retrieve static file, JSON parsing, find correct elements
