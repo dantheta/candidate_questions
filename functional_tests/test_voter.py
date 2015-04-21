@@ -5,6 +5,8 @@ from selenium.webdriver.common.keys import Keys
 
 class VoterTest(FunctionalTest):
 
+    fixtures = ['ft-data.json']
+
     def test_view_answers(self):
         # So that I can decide for whom to vote
         # As a voter
