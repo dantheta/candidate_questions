@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block jumbotron %}
+<h2>{{ constituency }}</h2>
+{% endblock jumbotron %}
+
+{% block content %}
+<form method="POST" action="/">
+  <input name="postcode" id="id_postcode" placeholder="Enter your postcode" />
+  {% csrf_token %}
+</form>
+{% endblock content %}

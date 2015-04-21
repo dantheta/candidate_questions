@@ -40,7 +40,12 @@ def HomePageView(request):
                     constituency_id=wmc_data['constituency_id'],
                     name=wmc_data['name']
                 )
-
-        return redirect('/')
+            return redirect('/constituencies/my-constituency/')
+        else:
+            return redirect('/')
 
     return render(request, 'home.html')
+
+def ConstituencyView(request):
+    wmc_name = Constituency.objects.first().name
+    return render(request, 'constituency.html', {'constituency': wmc_name})

@@ -37,7 +37,7 @@ class HomePageTest(TestCase):
         response = HomePageView(request)
 
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['location'], '/')
+        self.assertEqual(response['location'], '/constituencies/my-constituency/')
 
     def test_homepage_only_saves_constituency_when_necessary(self):
         request = HttpRequest()
@@ -84,3 +84,17 @@ class ConstituencyModelTest(TestCase):
         second_saved_wmc = saved_wmcs[1]
         self.assertEqual(first_saved_wmc.name, 'My Constituency')
         self.assertEqual(second_saved_wmc.name, 'Your Constituency')
+
+
+class ConstituencyViewTest(TestCase):
+
+    def test_uses_constituency_template(self):
+        Constituency.objects.create(constituency_id=1, name="My Constituency")
+        response = self.client.get('/constituencies/my-constituency/')
+        self.assertTemplateUsed(response, 'constituency.html')
+
+    def test_constituency_page_displays_constituency_name(self):
+        Constituency.objects.create(constituency_id=1, name="My Constituency")
+        response = self.client.get('/constituencies/my-constituency/')
+
+        self.assertContains(response, 'My Constituency')
