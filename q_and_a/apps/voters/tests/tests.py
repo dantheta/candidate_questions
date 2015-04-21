@@ -25,17 +25,50 @@ class HomePageTest(TestCase):
 
         response = HomePageView(request)
 
-        self.assertIn('Brighton, Pavilion', response.content.decode())
-        expected_html = render_to_string(
-            'home.html',
-            {'constituency': 'Brighton, Pavilion'}
-        )
-        self.assertEqual(response.content.decode(), expected_html)
+        self.assertEqual(Constituency.objects.count(), 1)
+        new_wmc = Constituency.objects.first()
+        self.assertEqual(new_wmc.name, 'Brighton, Pavilion')
+
+    def test_homepage_redirects_after_POST(self):
+        request = HttpRequest()
+        request.method = 'POST'
+        request.POST['postcode'] = 'bn1 1ee'
+
+        response = HomePageView(request)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response['location'], '/')
+
+    def test_homepage_only_saves_constituency_when_necessary(self):
+        request = HttpRequest()
+        HomePageView(request)
+        self.assertEqual(Constituency.objects.count(), 0)
+
+    def test_homepage_only_saves_new_constituencies(self):
+        request = HttpRequest()
+        request.method = 'POST'
+        request.POST['postcode'] = 'bn1 1ee'
+
+        response = HomePageView(request)
+        response2 = HomePageView(request)
+
+        self.assertEqual(Constituency.objects.count(), 1)
+
+    def test_homepage_handles_invalid_input(self):
+        request = HttpRequest()
+        request.method = 'POST'
+        request.POST['postcode'] = 'not a postcode'
+
+        response = HomePageView(request)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response['location'], '/')
 
 
 class ConstituencyModelTest(TestCase):
 
     def test_saving_and_retrieving_items(self):
+        # TODO: constituency_id (pk) not specified yet this test still passes?!
         first_wmc = Constituency()
         first_wmc.name = 'My Constituency'
         first_wmc.save()

@@ -1,26 +1,46 @@
-from urllib2 import urlopen
+from urllib2 import urlopen, HTTPError, URLError
 import json
 
-from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.db import IntegrityError
+
+from voters.models import Constituency
 
 
 def ynmp_get_constituency_from_postcode(postcode):
-    if postcode:
-        postcode = postcode.replace(' ', '').lower()
-        url = 'http://mapit.mysociety.org/postcode/%s' % postcode
-        response = urlopen(url).read()
-        json_data = json.loads(response)
-        constituency_id = str(json_data['shortcuts']['WMC'])
-        constituency_name = json_data['areas'][constituency_id]['name']
-        return(constituency_name)
-    else:
-        return('')
+    postcode = postcode.replace(' ', '').lower()
+    url = 'http://mapit.mysociety.org/postcode/%s' % postcode
+    wmc_id = None
+    wmc_name = None
+    try:
+        response = urlopen(url)
+        status_code = response.getcode()
+        page_data = response.read()
+        json_data = json.loads(page_data)
+        wmc_id = json_data['shortcuts']['WMC']
+        wmc_name = json_data['areas'][str(wmc_id)]['name']
+    except HTTPError as e:
+        status_code = e.code
+    return({
+        'status_code': status_code,
+        'constituency_id': wmc_id,
+        'name': wmc_name,
+    })
 
 def HomePageView(request):
-    postcode = request.POST.get('postcode', '')
-    constituency = ynmp_get_constituency_from_postcode(postcode)
+    if request.method == 'POST':
+        postcode = request.POST['postcode']
+        wmc_data = ynmp_get_constituency_from_postcode(postcode)
+        if wmc_data['status_code'] == 200:
+            wmc_exists = Constituency.objects.filter(
+                constituency_id=wmc_data['constituency_id']
+            )
+            if not wmc_exists:
+                Constituency.objects.create(
+                    constituency_id=wmc_data['constituency_id'],
+                    name=wmc_data['name']
+                )
 
-    return render(request, 'home.html', {
-        'constituency': constituency
-    })
+        return redirect('/')
+
+    return render(request, 'home.html')
