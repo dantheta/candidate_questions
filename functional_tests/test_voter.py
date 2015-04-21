@@ -27,11 +27,12 @@ class VoterTest(FunctionalTest):
 
         # There is still a text box inviting me to enter another postcode
         # I type in my postcode
+        inputbox = self.browser.find_element_by_id('id_postcode')
         inputbox.send_keys('bn1 1ee')
 
         # When I hit enter, the page updates, and it now shows the constituency for my postcode
         inputbox.send_keys(Keys.ENTER)
-        self.check_for_strings_in_page_element('h2', 'Brighton Pavilion')
+        self.check_for_strings_in_page_element('h2', 'Brighton, Pavilion')
 
         # I can see which candidates are standing in my constituency
         self.check_for_strings_in_page_element('body', {
