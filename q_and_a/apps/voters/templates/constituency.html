@@ -2,6 +2,11 @@
 
 {% block jumbotron %}
 <h1>{{ constituency }}</h1>
+  <ul>
+    {% for candidate in candidates %}
+    <li>{{ candidate }}</li>
+    {% endfor %}
+  </ul>
 {% endblock jumbotron %}
 
 {% block content %}

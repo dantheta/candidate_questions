@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.db import IntegrityError
 
 from voters.models import Constituency
-
+from candidates.models import Candidate
 
 def ynmp_get_constituency_from_postcode(postcode):
     postcode = postcode.replace(' ', '').lower()
@@ -46,4 +46,8 @@ def HomePageView(request):
 
 def ConstituencyView(request, wmc_id):
     wmc_name = Constituency.objects.get(constituency_id=wmc_id).name
-    return render(request, 'constituency.html', {'constituency': wmc_name})
+    candidates = Candidate.objects.filter(constituency_id=wmc_id)
+    return render(request, 'constituency.html', {
+        'constituency': wmc_name,
+        'candidates': candidates,
+        })

@@ -2,10 +2,12 @@ from django.core.urlresolvers import resolve
 from django.http import HttpRequest
 from django.template.loader import render_to_string
 from django.test import TestCase
+from django.contrib.auth.models import User
 
+from candidates.models import Candidate
 from voters.models import Constituency
-from voters.views import HomePageView
 
+from voters.views import HomePageView
 
 class HomePageTest(TestCase):
 
@@ -90,6 +92,16 @@ class ConstituencyModelTest(TestCase):
 
 class ConstituencyViewTest(TestCase):
 
+    def create_candidate(self, popit_id, name, constituency_id):
+        user = User.objects.create(username="candidate-" + str(popit_id))
+        candidate = Candidate.objects.create(
+            popit_id = popit_id,
+            name = name,
+            user = user,
+            constituency_id = constituency_id
+        )
+        return(candidate)
+
     def test_uses_constituency_template(self):
         wmc = Constituency.objects.create(constituency_id=1, name='My Constituency')
         response = self.client.get('/constituencies/%d/' % (wmc.constituency_id,))
@@ -104,3 +116,12 @@ class ConstituencyViewTest(TestCase):
         self.assertContains(response, 'Correct Constituency')
         self.assertNotContains(response,'Other Constituency')
 
+    def test_displays_candidates_for_constituency(self):
+        wmc = Constituency.objects.create(constituency_id=1, name='Dunny-on-the-Wold')
+        candidate_1 = self.create_candidate(1, 'Baldrick', wmc.constituency_id)
+        candidate_2 = self.create_candidate(2, 'Pitt the Even Younger', wmc.constituency_id)
+
+        response = self.client.get('/constituencies/%d/' % (wmc.constituency_id,))
+
+        self.assertContains(response, 'Baldrick')
+        self.assertContains(response, 'Pitt the Even Younger')
