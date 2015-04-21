@@ -1,0 +1,16 @@
+
+Dear {{candidate.name}},
+
+Once again, thank you for participating.  It's been a few days since your
+last visit, and we thought that you'd like to know that there are more
+questions for you from various organisations.
+
+To go back to the site and review the questions, please click on the
+unique link below:
+
+http://questions.campaignreply.org/candidates/authenticate/{{ candidate.auth_token }}
+
+Best regards
+
+
+
