@@ -26,7 +26,7 @@ class VoterTest(FunctionalTest):
         inputbox.send_keys(Keys.ENTER)
         voter1_wmc_url = self.browser.current_url
         self.assertRegexpMatches(voter1_wmc_url, '/constituencies/.+')
-        self.check_for_strings_in_page_element('h2', 'Cities of London and Westminster')
+        self.check_for_strings_in_page_element('h1', 'Cities of London and Westminster')
 
         # A second user now visits the site
 
@@ -50,7 +50,7 @@ class VoterTest(FunctionalTest):
         # constituency for their postcode
         voter2_wmc_url = self.browser.current_url
         self.assertRegexpMatches(voter2_wmc_url, '/constituencies/.+')
-        self.check_for_strings_in_page_element('h2', 'Brighton, Pavilion')
+        self.check_for_strings_in_page_element('h1', 'Brighton, Pavilion')
 
         # Their URL is different to the URL to which I was taken
         self.assertNotEqual(voter1_wmc_url, voter2_wmc_url)
