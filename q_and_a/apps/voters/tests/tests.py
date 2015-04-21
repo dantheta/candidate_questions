@@ -4,7 +4,7 @@ from django.test import TestCase
 from django.http import HttpRequest
 
 from voters.views import HomePageView
-
+from voters.models import Constituency
 
 class HomePageTest(TestCase):
 
@@ -31,3 +31,23 @@ class HomePageTest(TestCase):
             {'constituency': 'Brighton, Pavilion'}
         )
         self.assertEqual(response.content.decode(), expected_html)
+
+
+class ConstituencyModelTest(TestCase):
+
+    def test_saving_and_retrieving_items(self):
+        first_wmc = Constituency()
+        first_wmc.name = 'My Constituency'
+        first_wmc.save()
+
+        second_wmc = Constituency()
+        second_wmc.name = 'Your Constituency'
+        second_wmc.save()
+
+        saved_wmcs = Constituency.objects.all()
+        self.assertEqual(saved_wmcs.count(), 2)
+
+        first_saved_wmc = saved_wmcs[0]
+        second_saved_wmc = saved_wmcs[1]
+        self.assertEqual(first_saved_wmc.name, 'My Constituency')
+        self.assertEqual(second_saved_wmc.name, 'Your Constituency')
