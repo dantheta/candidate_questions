@@ -46,9 +46,14 @@ class Command(BaseCommand):
 
             if last_answer is None: # don't send to people who haven't answered a question ever
                 continue
-            if last_answer <= reminder_date and open_questions > 0:
+
+            
+            if max(last_answer,c.last_reminder_sent) <= reminder_date and open_questions > 0:
 
                 print 'emailing', c
+                # store timestamp for reminder email so that they don't get another one for <REMINDER_TIME_PERIOD> days
+                c.last_reminder_sent = datetime.datetime.now()
+                c.save()
                 msg = make_email(c)
                 conn.send_messages([msg])
         conn.close()
