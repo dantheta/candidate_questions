@@ -5,11 +5,11 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 
 from candidates.models import Candidate
-from voters.models import Constituency
+from constituencies.models import Constituency
 from questions.models import Question, Answer
 from organisations.models import Organisation
 
-from voters.views import HomePageView
+from constituencies.views import HomePageView
 
 class HomePageTest(TestCase):
 

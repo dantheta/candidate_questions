@@ -4,7 +4,7 @@ import json
 from django.shortcuts import render, redirect
 from django.db import IntegrityError
 
-from voters.models import Constituency
+from constituencies.models import Constituency
 from candidates.models import Candidate
 from questions.models import Question, Answer
 from organisations.models import Organisation

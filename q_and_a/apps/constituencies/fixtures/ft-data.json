@@ -981,21 +981,21 @@
   "fields": {
     "name": "Cities of London and Westminster"
   },
-  "model": "voters.constituency",
+  "model": "constituencies.constituency",
   "pk": 65759
 },
 {
   "fields": {
     "name": "Brighton, Pavilion"
   },
-  "model": "voters.constituency",
+  "model": "constituencies.constituency",
   "pk": 65787
 },
 {
   "fields": {
     "name": "Sheffield Central"
   },
-  "model": "voters.constituency",
+  "model": "constituencies.constituency",
   "pk": 65957
 }
 ]
