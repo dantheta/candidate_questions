@@ -78,8 +78,6 @@ class VoterTest(FunctionalTest):
             'How many grains of sand are there under the sea?',
             'What is your name?',
             'What is your quest?',
-            'What is your favourite colour?',
-            'Should I bother to vote?',
         })
 
         # They can see each candidate's answers to each question
@@ -94,7 +92,6 @@ class VoterTest(FunctionalTest):
         self.check_for_strings_in_page_element('body', {
             'The Very Organisation',
             'The Quite Organisation',
-            'The Not So Organisation',
         })
 
         # Satisfied, they and I go back to sleep
