@@ -72,6 +72,29 @@ class VoterTest(FunctionalTest):
             'Nick Yeomans',
         })
 
-        # I can see the questions asked of each candidate
-        # I can see each candidate's answers to each question
-        # I can see which organisation asked each question
+        # They can see the questions asked of each candidate
+        self.check_for_strings_in_page_element('body', {
+            'What is the meaning of life?',
+            'How many grains of sand are there under the sea?',
+            'What is your name?',
+            'What is your quest?',
+            'What is your favourite colour?',
+            'Should I bother to vote?',
+        })
+
+        # They can see each candidate's answers to each question
+        self.check_for_strings_in_page_element('body', {
+            '42',
+            'I don\'t know.',
+            'To find the Holy Grail',
+            'Too many',
+        })
+
+        # They can see which organisation asked each question
+        self.check_for_strings_in_page_element('body', {
+            'The Very Organisation',
+            'The Quite Organisation',
+            'The Not So Organisation',
+        })
+
+        # Satisfied, they and I go back to sleep
