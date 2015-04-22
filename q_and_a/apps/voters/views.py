@@ -6,6 +6,8 @@ from django.db import IntegrityError
 
 from voters.models import Constituency
 from candidates.models import Candidate
+from questions.models import Question, Answer
+from organisations.models import Organisation
 
 def ynmp_get_constituency_from_postcode(postcode):
     postcode = postcode.replace(' ', '').lower()
@@ -47,7 +49,14 @@ def HomePageView(request):
 def ConstituencyView(request, wmc_id):
     wmc_name = Constituency.objects.get(constituency_id=wmc_id).name
     candidates = Candidate.objects.filter(constituency_id=wmc_id)
+    answers = Answer.objects.all()
+    questions = Question.objects.all()
+    organisations = Organisation.objects.all()
+
     return render(request, 'constituency.html', {
         'constituency': wmc_name,
         'candidates': candidates,
+        'answers': answers,
+        'questions': questions,
+        'organisations': organisations,
         })
