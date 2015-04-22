@@ -6,6 +6,8 @@ from django.contrib.auth.models import User
 
 from candidates.models import Candidate
 from voters.models import Constituency
+from questions.models import Question, Answer
+from organisations.models import Organisation
 
 from voters.views import HomePageView
 
@@ -92,24 +94,52 @@ class ConstituencyModelTest(TestCase):
 
 class ConstituencyViewTest(TestCase):
 
-    def create_candidate(self, popit_id, name, constituency_id):
+    def create_candidate(self, popit_id, name, constituency_id, participating=True):
         user = User.objects.create(username="candidate-" + str(popit_id))
         candidate = Candidate.objects.create(
             popit_id = popit_id,
             name = name,
             user = user,
-            constituency_id = constituency_id
+            constituency_id = constituency_id,
+            participating = participating,
         )
         return(candidate)
 
+    def create_organisation(self, username, name):
+        user = User.objects.create(username=username)
+        org = Organisation.objects.create(name=name, user=user)
+        return(org)
+
+    def create_question(self, question, org):
+        q = Question.objects.create(question=question, organisation=org)
+        return(q)
+
+    def create_answer(self, question, candidate, answer):
+        ans = Answer.objects.create(question=question, candidate=candidate, answer = answer)
+        return(ans)
+
+    def setUp(self):
+        self.wmc = Constituency.objects.create(constituency_id=1, name='Dunny-on-the-Wold')
+        org_1 = self.create_organisation('test_org_1', 'An Organisation')
+        org_2 = self.create_organisation('test_org_2', 'Another Organisation')
+        candidate_1 = self.create_candidate(1, 'Baldrick', self.wmc.constituency_id)
+        candidate_2 = self.create_candidate(2, 'Pitt the Even Younger', self.wmc.constituency_id)
+        q1 = self.create_question('Question 1', org_1)
+        q2 = self.create_question('Question 2', org_1)
+        q3 = self.create_question('Question A', org_2)
+        a1 = self.create_answer(q1, candidate_1, 'Answer 1')
+        a2 = self.create_answer(q2, candidate_1, 'Answer 2')
+        a3 = self.create_answer(q3, candidate_1, 'Answer 3')
+        a4 = self.create_answer(q1, candidate_2, 'Answer A')
+        a5 = self.create_answer(q2, candidate_2, 'Answer B')
+
     def test_uses_constituency_template(self):
-        wmc = Constituency.objects.create(constituency_id=1, name='My Constituency')
-        response = self.client.get('/constituencies/%d/' % (wmc.constituency_id,))
+        response = self.client.get('/constituencies/%d/' % (self.wmc.constituency_id,))
         self.assertTemplateUsed(response, 'constituency.html')
 
     def test_displays_correct_constituency_name(self):
-        correct_wmc = Constituency.objects.create(constituency_id=1, name='Correct Constituency')
-        other_wmc = Constituency.objects.create(constituency_id=2, name='Other Constituency')
+        correct_wmc = Constituency.objects.create(constituency_id=2, name='Correct Constituency')
+        other_wmc = Constituency.objects.create(constituency_id=3, name='Other Constituency')
 
         response = self.client.get('/constituencies/%d/' % (correct_wmc.constituency_id,))
 
@@ -117,11 +147,16 @@ class ConstituencyViewTest(TestCase):
         self.assertNotContains(response,'Other Constituency')
 
     def test_displays_candidates_for_constituency(self):
-        wmc = Constituency.objects.create(constituency_id=1, name='Dunny-on-the-Wold')
-        candidate_1 = self.create_candidate(1, 'Baldrick', wmc.constituency_id)
-        candidate_2 = self.create_candidate(2, 'Pitt the Even Younger', wmc.constituency_id)
-
-        response = self.client.get('/constituencies/%d/' % (wmc.constituency_id,))
+        response = self.client.get('/constituencies/%d/' % (self.wmc.constituency_id,))
 
         self.assertContains(response, 'Baldrick')
         self.assertContains(response, 'Pitt the Even Younger')
+
+    def test_displays_answers_for_constituency(self):
+        response = self.client.get('/constituencies/%d/' % (self.wmc.constituency_id,))
+
+        self.assertContains(response, 'Answer 1')
+        self.assertContains(response, 'Answer 2')
+        self.assertContains(response, 'Answer 3')
+        self.assertContains(response, 'Answer A')
+        self.assertContains(response, 'Answer B')
