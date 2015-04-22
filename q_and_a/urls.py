@@ -16,4 +16,5 @@ urlpatterns = patterns('',
     url(r'^organisations', include('organisations.urls')),
     url(r'^candidates', include('candidates.urls')),
     url(r'^api/v1/question/(\d+)/?$', 'questions.views.api'),
+    url(r'^constituencies/', include('voters.urls')),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
