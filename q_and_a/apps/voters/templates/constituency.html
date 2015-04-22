@@ -4,32 +4,20 @@
 
   <h1>{{ constituency }}</h1>
 
+  <h2>Candidates</h2>
+
   <ul>
     {% for candidate in candidates %}
-      <li>{{ candidate }}</li>
+    <li><a href="/candidates/view_answer/{{candidate.popit_id}}">{{ candidate.name }}</a></li>
     {% endfor %}
   </ul>
-
-  <form method="POST" action="/">
-    <input name="postcode" id="id_postcode" placeholder="Enter your postcode" />
-    {% csrf_token %}
-  </form>
 
 {% endblock jumbotron %}
 
 {% block content %}
-
-  {% for candidate in candidates %}
-    <h2>{{ candidate.name }}</h2>
-    {% for organisation in organisations %}
-      <h3>Questions from {{ organisation.name }}</h3>
-      {% for answer in answers %}
-        {% if answer.candidate == candidate and answer.question.organisation == organisation %}
-          <h4>{{ answer.question.question }}</h4>
-          <p>{{ answer.answer }}</p>
-        {% endif %}
-      {% endfor %}
-    {% endfor %}
-  {% endfor %}
-
+<h2>Search for another constituency</h2>
+<form method="POST">
+  <input name="postcode" id="id_postcode" placeholder="Enter your postcode" />
+  {% csrf_token %}
+</form>
 {% endblock content %}

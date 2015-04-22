@@ -151,12 +151,3 @@ class ConstituencyViewTest(TestCase):
 
         self.assertContains(response, 'Baldrick')
         self.assertContains(response, 'Pitt the Even Younger')
-
-    def test_displays_answers_for_constituency(self):
-        response = self.client.get('/constituencies/%d/' % (self.wmc.constituency_id,))
-
-        self.assertContains(response, 'Answer 1')
-        self.assertContains(response, 'Answer 2')
-        self.assertContains(response, 'Answer 3')
-        self.assertContains(response, 'Answer A')
-        self.assertContains(response, 'Answer B')
