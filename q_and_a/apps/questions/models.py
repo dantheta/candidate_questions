@@ -44,7 +44,7 @@ class Answer(models.Model):
     candidate = models.ForeignKey(Candidate)
     answer = models.TextField(blank=True)
     completed = models.BooleanField(default=False)
-    completed_timestamp = models.DateField(null=True)
+    completed_timestamp = models.DateTimeField(null=True)
 
     class Meta:
         unique_together = (('candidate', 'question'),)
