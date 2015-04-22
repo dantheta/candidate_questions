@@ -63,6 +63,29 @@ class Candidate(TokenAuthModel):
         # return the number of answers added
         return n
 
+    def should_send_reminder(self):
+        import datetime
+        from django.utils import timezone
+        from django.db.models import Max
+        from questions.models import Answer
+
+        #cutoff interval is defined in settings
+        reminder_date = timezone.now() - datetime.timedelta(settings.REMINDER_TIME_PERIOD)
+
+        # get date of latest answer
+        last_answer = Answer.objects.filter(candidate=self,completed=True).aggregate(Max('completed_timestamp'))['completed_timestamp__max']
+
+        open_questions = self.get_open_question_count()
+        #print "Candidate: ", self, "; Last answer: ", last_answer, "; Open questions: ", open_questions, "; Last Reminder: ", self.last_reminder_sent
+
+        if last_answer is not None: # don't send to people who haven't answered a question ever
+            # convert to timestamp for midnight on that day
+            last_answer_timestamp = datetime.datetime(last_answer.year, last_answer.month, last_answer.day,tzinfo=timezone.get_current_timezone())
+            if max(last_answer_timestamp,self.last_reminder_sent or last_answer_timestamp) <= reminder_date and open_questions > 0:
+                return True
+
+        return False
+
 
 def candidate_created_cb(sender, instance, created, **kwargs):
     """post-save hook that automatically lines up questions when
