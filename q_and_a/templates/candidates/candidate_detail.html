@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}{{ object.name }} ({{ candidate.party }} / {{ candidate.constituency_name }})
+{% endblock title %}
+
+{% block content %}
+<h1>{{ object.name }}</h1>
+
+<p>
+party: {{ candidate.party }}<br>
+constituency: {{ candidate.constituency_name }}
+</p>
+
+<p><a href="{% url "candidate_answer_list" %}">back to candidate list</a></p>
+
+{% for answer in object.answer_set.all %}
+{% if answer.answer %}
+    <h3>{{ answer.question }}</h3>
+    <p>organisation: {{ answer.question.organisation }}</p>
+    {{ answer.answer | linebreaks }}
+{% endif %}
+{% endfor %}
+</ul>
+
+{% endblock content %}

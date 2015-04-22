@@ -1,6 +1,6 @@
 import datetime
 
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView, DetailView
 from django.views.generic.edit import FormView
 from django.shortcuts import get_object_or_404
 
@@ -47,3 +47,10 @@ class CandidateAnswer(FormView):
         self.object.save()
 
         return super(CandidateAnswer, self).form_valid(form)
+
+class CandidateAnswerList(ListView):
+    def get_queryset(self):
+        return Candidate.objects.filter(answer__completed=True).distinct()
+
+class CandidateAnswerDetail(DetailView):
+    model = Candidate

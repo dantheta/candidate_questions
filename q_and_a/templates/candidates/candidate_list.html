@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Candidate answers{% endblock title %}
+
+
+{% block content %}
+<h1>Candidate answers</h1>
+<p>{{ object_list.count }} candidates have answered questions</p>
+<ul>
+{% for candidate in object_list %}
+<li><a href="{%url "candidate_answer_detail" pk=candidate.popit_id %}">{{ candidate }}</a> ({{ candidate.party }} / {{ candidate.constituency_name }})
+{% endfor %}
+</ul>
+
+{% endblock content %}
