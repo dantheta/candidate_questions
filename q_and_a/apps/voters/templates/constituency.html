@@ -17,23 +17,19 @@
 
 {% endblock jumbotron %}
 
-
 {% block content %}
 
-{% for candidate in candidates %}
-  <h2>{{ candidate.name }}</h2>
-{% endfor %}
-
-{% for organisation in organisations %}
-  <h3>{{ organisation.name }}</h3>
-{% endfor %}
-
-{% for question in questions %}
-  <h4>{{ question.question }}</h4>
-{% endfor %}
-
-{% for answer in answers %}
-  <blockquote>{{ answer.answer }}</blockquote>
-{% endfor %}
+  {% for candidate in candidates %}
+    <h2>{{ candidate.name }}</h2>
+    {% for organisation in organisations %}
+      <h3>Questions from {{ organisation.name }}</h3>
+      {% for answer in answers %}
+        {% if answer.candidate == candidate and answer.question.organisation == organisation %}
+          <h4>{{ answer.question.question }}</h4>
+          <p>{{ answer.answer }}</p>
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+  {% endfor %}
 
 {% endblock content %}
