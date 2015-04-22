@@ -14,6 +14,7 @@ class Candidate(TokenAuthModel):
     party = models.CharField(max_length=64, null=True)
     participating = models.BooleanField(default=False)
     invited = models.DateTimeField(null=True)
+    last_reminder_sent = models.DateTimeField(null=True)
 
     def __unicode__(self):
         return self.name
