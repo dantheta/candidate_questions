@@ -131,7 +131,7 @@ PROJECT_APPS = (
     'organisations',
     'candidates',
     'questions',
-    'voters',
+    'constituencies',
 )
 
 INSTALLED_APPS += PROJECT_APPS
