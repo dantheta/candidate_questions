@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 
 {% block jumbotron %}
 <h1>Candidate Q&amp;As #GE2015</h1>
@@ -12,5 +13,6 @@
   <input name="postcode" id="id_postcode" placeholder="Enter your postcode" />
   {% csrf_token %}
 </form>
-<p>Or you can <a href="/candidates/view_answers/">browse all candidate answers</a>.
+<p>Or you can <a href="/candidates/view_answers/">browse all candidate answers</a>.</p>
+<img src="{% static "img/89up_logo_blue_100px.png" %}" alt="89up"/>
 {% endblock content %}
