@@ -13,7 +13,7 @@ class Candidate(TokenAuthModel):
     constituency_name = models.CharField(max_length=64)
     party = models.CharField(max_length=64, null=True)
     participating = models.BooleanField(default=False)
-    invited = models.DateTimeField(null=True)
+    invited = models.DateTimeField(blank=True, null=True)
 
     def __unicode__(self):
         return self.name
