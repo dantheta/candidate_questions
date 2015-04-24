@@ -17,8 +17,8 @@ class CandidateAuthenticateView(BaseAuthView):
                 or not hasattr(self.request.user, 'candidate_id')):
             self.login()
         candidate = self.request.user.candidate
-        if not candidate.participating:
-            candidate.participating = True
+        if candidate.status <> candidate.PARTICIPATING:
+            candidate.status = candidate.PARTICIPATING
             candidate.save()
         return candidate.get_absolute_url()
 

@@ -6,6 +6,18 @@ from django.conf import settings
 
 
 class Candidate(TokenAuthModel):
+    NEW = 0
+    INVITED = 1
+    PARTICIPATING = 2
+    DECLINED = 3
+
+    STATUSES=(
+        (NEW, 'NEW'),
+        (INVITED, 'INVITED'),
+        (PARTICIPATING, 'PARTICIPATING'),
+        (DECLINED, 'DECLINED'),
+        )
+
     popit_id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=128)
     contact_address = models.CharField(null=True, blank=True, max_length=255)
@@ -15,6 +27,8 @@ class Candidate(TokenAuthModel):
     participating = models.BooleanField(default=False)
     invited = models.DateTimeField(blank=True, null=True)
     last_reminder_sent = models.DateTimeField(blank=True, null=True)
+    status = models.IntegerField(default=0, choices=STATUSES)
+
 
     def __unicode__(self):
         return self.name
@@ -95,7 +109,7 @@ class Candidate(TokenAuthModel):
 def candidate_created_cb(sender, instance, created, **kwargs):
     """post-save hook that automatically lines up questions when
     a new candidate is saved (if they're participating)"""
-    if instance.participating:
+    if instance.status == Candidate.PARTICIPATING:
         instance.assign_questions(settings.OPEN_QUESTION_TARGET)
 
 post_save.connect(candidate_created_cb, sender=Candidate)

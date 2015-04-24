@@ -26,7 +26,8 @@ class Command(BaseCommand):
         in <n> days, but have more questions to answer"""
 
         candidates_with_email = [candidate for candidate in Candidate.objects.all()
-                                 if candidate.contact_address and candidate.participating]
+                                 if candidate.contact_address and 
+                                    candidate.status = candidate.PARTICIPATING]
 
 
         print 'sending e-mails'

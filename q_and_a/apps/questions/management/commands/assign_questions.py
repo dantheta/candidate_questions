@@ -11,7 +11,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # for each candidate that is participating
-        for candidate in Candidate.objects.filter(participating=True):
+        for candidate in Candidate.objects.filter(status=Candidate.PARTICIPATING):
             self.stdout.write("Assigning questions for: {}".format(candidate))
             # get open question count for candidate
             open_questions = candidate.get_open_question_count()
