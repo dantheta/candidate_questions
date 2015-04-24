@@ -16,6 +16,8 @@
     {% bootstrap_styles theme='readable' type='min.css' %}
   </head>
 
+{% load staticfiles %}
+
   <body>
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container">
@@ -44,6 +46,7 @@
       <footer class="footer">
       {% block footer %}
         <hr>
+        <a href="http://89up.org/" style="float:left"><img src="{% static "img/89up_logo_blue_50px.png" %}" height="50" width="50" alt="89up"/></a>
         <p>Built by <a href="http://89up.org/">89up Labs</a> with help from: <a href="https://www.openrightsgroup.org/">Open Rights Group</a> + <a href="https://democracyclub.org.uk/">Democracy Club</a></p>
         <p>Questions? Comments? Bugs? <a href="mailto:questions@campaignreply.org">Email a human</a>.</p>
       {% endblock footer %}
