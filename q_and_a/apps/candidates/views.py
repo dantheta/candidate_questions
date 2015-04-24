@@ -1,8 +1,8 @@
-import datetime
 
 from django.views.generic import TemplateView, ListView, DetailView
 from django.views.generic.edit import FormView
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
 from forms import AnswerForm
 from models import Candidate
@@ -43,7 +43,7 @@ class CandidateAnswer(FormView):
     def form_valid(self, form):
         self.object = form.save()
         self.object.completed = True
-        self.object.completed_timestamp = datetime.datetime.utcnow()
+        self.object.completed_timestamp = timezone.now()
         self.object.save()
 
         return super(CandidateAnswer, self).form_valid(form)

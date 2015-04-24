@@ -176,6 +176,9 @@ LOGGING = {
 
 # EMAILS
 
+# reminder email time interval in days
+REMINDER_TIME_PERIOD=7
+
 # CANDIDATE CONFIG
 
 OPEN_QUESTION_TARGET = 10
