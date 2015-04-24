@@ -1,6 +1,9 @@
 from django.db import IntegrityError
 from django.test import TestCase
 
+from django.utils import timezone
+import datetime
+
 from django.contrib.auth.models import User
 from questions.models import Question,Answer
 from organisations.models import Organisation
@@ -77,3 +80,81 @@ class TestQuestionAssignment(TestCase):
         """Question/Answer combinations must be unique"""
         answer = Answer(candidate=self.candidate, question=self.q1)
         self.assertRaises(IntegrityError,answer.save)
+
+
+class ReminderTestCase(TestCase):
+    def setUp(self):
+        user = User(username='test_org1_user')
+        user.save()
+        o1 = Organisation(name='Organisation 1')
+        o1.user = user
+        o1.save()
+
+        user = User(username='test_org2_user')
+        user.save()
+        o2 = Organisation(name='Organisation 2')
+        o2.user = user
+        o2.save()
+
+        c1 = Candidate(popit_id=1235,
+            name='Bob',
+            contact_address='bob@example.com',
+            participating=True
+            )
+        c1.save()
+        self.candidate = c1
+
+        q1 = Question(organisation=o1,
+            question='What is your name?',
+            type='text',
+            )
+        q1.save()
+        q2 = Question(organisation=o2,
+            question='What is your quest?',
+            type='text',
+            )
+        q2.save()
+
+        a1 = Answer(candidate=c1,
+            question=q1,
+            completed=True,
+            completed_timestamp=datetime.datetime(2015,1,1,
+                tzinfo=timezone.get_current_timezone())
+            )
+        a1.save()
+        self.a1 = a1
+
+        a2 = Answer(candidate=c1,
+            question=q2,
+            completed=False
+            )
+        a2.save()
+        self.a2 = a2
+
+    def testReminder(self):
+        """Reminder should be sent when last answer >n days ago, 
+        last reminder is null or >n days ago and there are open questions"""
+        self.assertEquals(self.candidate.should_send_reminder(), True)
+
+    def testLast7DaysAnswer(self):
+        """Reminder should not be sent when last answer is <n days ago"""
+        self.a1.completed_timestamp = timezone.now()
+        self.a1.save()
+        self.assertEquals(self.candidate.should_send_reminder(), False)
+
+    def testLast7DaysReminder(self):
+        """Reminder should not be sent when last reminder is <n days ago"""
+        self.candidate.last_reminder_sent = timezone.now()
+        self.assertEquals(self.candidate.should_send_reminder(), False)
+
+    def testNoOpenQuestions(self):
+        """Reminder should not be send if there are no open questions"""
+        self.a2.delete()
+        self.assertEquals(self.candidate.should_send_reminder(), False)
+        
+    def testNeverAnswered(self):
+        """Reminder should not be sent if the candidate has never answered"""
+        self.a1.delete()
+        self.a2.delete()
+        self.assertEquals(self.candidate.should_send_reminder(), False)
+
