@@ -12,7 +12,7 @@ class Question(models.Model):
     )
 
     organisation = models.ForeignKey(Organisation)
-    question = models.CharField(blank=True, max_length=100)
+    question = models.CharField(blank=True, max_length=200)
     type = models.CharField(max_length=8, choices=TYPES, default='text')
     choices = models.CharField(blank=True, max_length=100)
     added = models.DateTimeField(blank=True, auto_now_add=True)
