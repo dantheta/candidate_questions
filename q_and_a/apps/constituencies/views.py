@@ -44,7 +44,13 @@ def HomePageView(request):
         else:
             return redirect('/')
 
-    return render(request, 'home.html')
+    candidates_involved = Candidate.objects.filter(answer__completed=True).distinct().count()
+    questions_answered = Answer.objects.filter(completed=True).count()
+
+    return render(request, 'home.html', {
+        'candidates_involved': candidates_involved,
+        'questions_answered': questions_answered,
+    })
 
 def ConstituencyView(request, wmc_id):
     wmc_name = Constituency.objects.get(constituency_id=wmc_id).name
