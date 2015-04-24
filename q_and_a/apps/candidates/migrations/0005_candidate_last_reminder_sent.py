@@ -7,14 +7,14 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('candidates', '0003_candidate_invited'),
+        ('candidates', '0004_auto_20150423_0841'),
     ]
 
     operations = [
         migrations.AddField(
             model_name='candidate',
             name='last_reminder_sent',
-            field=models.DateTimeField(null=True),
+            field=models.DateTimeField(blank=True, null=True),
             preserve_default=True,
         ),
     ]
