@@ -31,13 +31,12 @@ class Question(models.Model):
         return types[self.type]
 
     def widget(self):
-        if self.type == 'text':
-            return Textarea()
-        if self.type == 'options':
-            choices = [(i, i) for i in self.choices.split(',')]
-        elif self.type == 'bool':
-            choices = [('yes', 'yes'), ('no', 'no')]
-        return RadioSelect(choices=choices)
+        type_map = {
+            u'options': lambda: [(i, i) for i in self.choices.split(',')],
+            u'bool': lambda: [('yes', 'yes'), ('no', 'no')],
+        }
+        choices = type_map.get(self.type.strip()) if self.type else None
+        return RadioSelect(choices=choices()) if choices else Textarea()
 
 class Answer(models.Model):
     question = models.ForeignKey(Question)
