@@ -20,7 +20,10 @@ class HomePageTest(TestCase):
     def test_homepage_returns_correct_html(self):
         request = HttpRequest()
         response = HomePageView(request)
-        expected_html = render_to_string('home.html')
+        expected_html = render_to_string('home.html', {
+            'candidates_involved': 0,
+            'questions_answered': 0,
+        })
         self.assertEqual(response.content.decode(), expected_html)
 
 
