@@ -16,7 +16,7 @@
 
 {% block content %}
 <h2>Search for another constituency</h2>
-<form method="POST">
+<form method="POST" action="/">
   <input name="postcode" id="id_postcode" placeholder="Enter your postcode" />
   {% csrf_token %}
 </form>
