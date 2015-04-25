@@ -1,8 +1,9 @@
 from urllib2 import urlopen, HTTPError, URLError
 import json
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.db import IntegrityError
+from django.http import Http404
 
 from constituencies.models import Constituency
 from candidates.models import Candidate
@@ -42,7 +43,7 @@ def HomePageView(request):
             )
             return redirect('/constituencies/%d/' % (wmc.constituency_id,))
         else:
-            return redirect('/')
+            raise Http404("Constituency not found")
 
     candidates_involved = Candidate.objects.filter(answer__completed=True).distinct().count()
     questions_answered = Answer.objects.filter(completed=True).count()
@@ -53,7 +54,7 @@ def HomePageView(request):
     })
 
 def ConstituencyView(request, wmc_id):
-    wmc_name = Constituency.objects.get(constituency_id=wmc_id).name
+    wmc_name = get_object_or_404(Constituency, constituency_id=wmc_id).name
     candidates = Candidate.objects.filter(constituency_id=wmc_id)
     answers = Answer.objects.filter(candidate__constituency_id=wmc_id)
     questions = Question.objects.filter(answer__candidate__constituency_id=wmc_id).distinct()

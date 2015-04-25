@@ -61,14 +61,13 @@ class LookUpConstituencyTest(TestCase):
 
         self.assertEqual(Constituency.objects.count(), 1)
 
-    def test_homepage_handles_invalid_input(self):
+    def test_homepage_handles_invalid_postcode(self):
         response = self.client.post(
             '/',
             data={'postcode': 'not a postcode'}
         )
 
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, '/')
+        self.assertEqual(response.status_code, 404)
 
 
 class ConstituencyModelTest(TestCase):
@@ -151,3 +150,13 @@ class ConstituencyViewTest(TestCase):
 
         self.assertContains(response, 'Baldrick')
         self.assertContains(response, 'Pitt the Even Younger')
+
+    def test_handles_invalid_constituency(self):
+        response = self.client.post('/constituencies/asdfghjkl/')
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_valid_constituency_not_in_database(self):
+        response = self.client.post('/constituencies/65993/')
+
+        self.assertEqual(response.status_code, 404)
