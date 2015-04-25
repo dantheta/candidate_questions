@@ -55,14 +55,8 @@ def HomePageView(request):
 def ConstituencyView(request, wmc_id):
     wmc_name = Constituency.objects.get(constituency_id=wmc_id).name
     candidates = Candidate.objects.filter(constituency_id=wmc_id)
-    answers = Answer.objects.filter(candidate__constituency_id=wmc_id)
-    questions = Question.objects.filter(answer__candidate__constituency_id=wmc_id).distinct()
-    organisations = Organisation.objects.filter(question__answer__candidate__constituency_id=wmc_id).distinct()
 
     return render(request, 'constituency.html', {
         'constituency': wmc_name,
         'candidates': candidates,
-        'answers': answers,
-        'questions': questions,
-        'organisations': organisations,
         })

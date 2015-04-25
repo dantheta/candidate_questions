@@ -62,15 +62,19 @@ class ConstituencyTest(FunctionalTest):
         page_text = self.browser.find_element_by_tag_name('body').text
         self.assertNotIn('Cities of London and Westminster', page_text)
 
-        # They can see which candidates are standing in their constituency
+        # They can see:
+        #   which candidates are standing in their constituency, and;
+        #   to which party each belongs; and
+        #   either the number of questions each has answered, or;
+        #   that the candidate has chosen not to participate.
         self.check_for_strings_in_page_element('body', {
-            'Chris Bowers',
-            'Nigel Carter',
-            'Caroline Lucas',
-            'Clarence Mitchell',
-            'Howard Pilott',
-            'Purna Sen',
-            'Nick Yeomans',
+            'Chris Bowers (Liberal Democrats / 2 questions answered)',
+            'Nigel Carter (UK Independence Party (UKIP) / 2 questions answered)',
+            'Caroline Lucas (Green Party / 2 questions answered)',
+            'Clarence Mitchell (Conservative Party / Not participating)',
+            'Howard Pilott (The Socialist Party of Great Britain / 2 questions answered)',
+            'Purna Sen (Labour Party / 2 questions answered)',
+            'Nick Yeomans (Independent / 1 questions answered)',
         })
 
-        # Satisfied, they and I go back to sleep
+        # Satisfied, I go back to sleep

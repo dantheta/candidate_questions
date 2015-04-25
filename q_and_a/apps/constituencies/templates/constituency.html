@@ -8,7 +8,12 @@
 
   <ul>
     {% for candidate in candidates %}
-    <li><a href="/candidates/view_answer/{{candidate.popit_id}}">{{ candidate.name }}</a></li>
+      <li><a href="/candidates/view_answer/{{ candidate.popit_id }}">{{ candidate.name }}</a> ({{ candidate.party }} /
+      {% if candidate.participating %}
+        {{ candidate.get_answer_count }} questions answered)</li>
+      {% else %}
+        Not participating)</li>
+      {% endif %}
     {% endfor %}
   </ul>
 
