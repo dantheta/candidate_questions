@@ -177,7 +177,6 @@ class ConstituencyViewTest(TestCase):
         self.assertContains(response, 'Baldrick')
         self.assertContains(response, 'Pitt the Even Younger')
 
-<<<<<<< HEAD
     def test_handles_invalid_constituency(self):
         response = self.client.post('/constituencies/asdfghjkl/')
 
