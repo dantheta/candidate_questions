@@ -20,7 +20,10 @@ class HomePageTest(TestCase):
     def test_homepage_returns_correct_html(self):
         request = HttpRequest()
         response = HomePageView(request)
-        expected_html = render_to_string('home.html')
+        expected_html = render_to_string('home.html', {
+            'candidates_involved': 0,
+            'questions_answered': 0,
+        })
         self.assertEqual(response.content.decode(), expected_html)
 
 
@@ -93,13 +96,14 @@ class ConstituencyModelTest(TestCase):
 
 class ConstituencyViewTest(TestCase):
 
-    def create_candidate(self, popit_id, name, constituency_id, participating=True):
+    def create_candidate(self, popit_id, name, constituency_id, party, participating=True):
         user = User.objects.create(username="candidate-" + str(popit_id))
         candidate = Candidate.objects.create(
             popit_id = popit_id,
             name = name,
             user = user,
             constituency_id = constituency_id,
+            party = party,
             participating = participating,
         )
         return(candidate)
@@ -113,16 +117,38 @@ class ConstituencyViewTest(TestCase):
         q = Question.objects.create(question=question, organisation=org)
         return(q)
 
-    def create_answer(self, question, candidate, answer):
-        ans = Answer.objects.create(question=question, candidate=candidate, answer = answer)
+    def create_answer(self, question, candidate, answer, completed=True):
+        ans = Answer.objects.create(
+            question=question,
+            candidate=candidate,
+            answer = answer,
+            completed = completed
+        )
         return(ans)
 
     def setUp(self):
         self.wmc = Constituency.objects.create(constituency_id=1, name='Dunny-on-the-Wold')
         org_1 = self.create_organisation('test_org_1', 'An Organisation')
         org_2 = self.create_organisation('test_org_2', 'Another Organisation')
-        candidate_1 = self.create_candidate(1, 'Baldrick', self.wmc.constituency_id)
-        candidate_2 = self.create_candidate(2, 'Pitt the Even Younger', self.wmc.constituency_id)
+        candidate_1 = self.create_candidate(
+            popit_id = 1,
+            name = 'Baldrick',
+            constituency_id = self.wmc.constituency_id,
+            party = 'Adder Party',
+        )
+        candidate_2 = self.create_candidate(
+            popit_id = 2,
+            name = 'Pitt the Even Younger',
+            constituency_id = self.wmc.constituency_id,
+            party = 'Whig',
+        )
+        candidate_3 = self.create_candidate(
+            popit_id = 3,
+            name = 'Brigadier General Horace Bolsom',
+            constituency_id = self.wmc.constituency_id,
+            party = 'Keep Royalty White, Rat Catching And Safe Sewage Residents Party',
+            participating = False
+        )
         q1 = self.create_question('Question 1', org_1)
         q2 = self.create_question('Question 2', org_1)
         q3 = self.create_question('Question A', org_2)
@@ -130,7 +156,7 @@ class ConstituencyViewTest(TestCase):
         a2 = self.create_answer(q2, candidate_1, 'Answer 2')
         a3 = self.create_answer(q3, candidate_1, 'Answer 3')
         a4 = self.create_answer(q1, candidate_2, 'Answer A')
-        a5 = self.create_answer(q2, candidate_2, 'Answer B')
+        a5 = self.create_answer(q2, candidate_2, 'Answer B', False)
 
     def test_uses_constituency_template(self):
         response = self.client.get('/constituencies/%d/' % (self.wmc.constituency_id,))
@@ -151,6 +177,7 @@ class ConstituencyViewTest(TestCase):
         self.assertContains(response, 'Baldrick')
         self.assertContains(response, 'Pitt the Even Younger')
 
+<<<<<<< HEAD
     def test_handles_invalid_constituency(self):
         response = self.client.post('/constituencies/asdfghjkl/')
 
@@ -160,3 +187,36 @@ class ConstituencyViewTest(TestCase):
         response = self.client.post('/constituencies/65993/')
 
         self.assertEqual(response.status_code, 404)
+
+    def test_displays_parties_for_candidates(self):
+        response = self.client.get('/constituencies/%d/' % (self.wmc.constituency_id,))
+
+        self.assertContains(response, 'Baldrick</a> (Adder Party')
+        self.assertContains(response, 'Pitt the Even Younger</a> (Whig')
+
+    def test_displays_answer_count_for_candidates(self):
+        response = self.client.get('/constituencies/%d/' % (self.wmc.constituency_id,))
+        self.assertContains(response,
+            '<li><a href="/candidates/view_answer/1">' +
+            'Baldrick</a> ' +
+            '(Adder Party /' +
+            ' 3 questions answered)</li>',
+            html=True
+        )
+        self.assertContains(response,
+            '<li><a href="/candidates/view_answer/2">' +
+            'Pitt the Even Younger</a> ' +
+            '(Whig /' +
+            ' 1 questions answered)</li>',
+            html=True
+        )
+
+    def test_displays_non_participating_candidates(self):
+        response = self.client.get('/constituencies/%d/' % (self.wmc.constituency_id,))
+        self.assertContains(response,
+            '<li><a href="/candidates/view_answer/3">' +
+            'Brigadier General Horace Bolsom</a> ' +
+            '(Keep Royalty White, Rat Catching And Safe Sewage Residents Party / ' +
+            'Not participating)</li>',
+            html=True
+        )

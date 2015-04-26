@@ -27,8 +27,13 @@ class Candidate(TokenAuthModel):
 
     def get_open_question_count(self):
         from questions.models import Answer
-        open_questions = Answer.objects.filter(candidate=self,completed=False).count()
+        open_questions = Answer.objects.filter(candidate=self, completed=False).count()
         return open_questions
+
+    def get_answer_count(self):
+        from questions.models import Answer
+        answer_count = Answer.objects.filter(candidate=self, completed=True).count()
+        return answer_count
 
     def assign_questions(self, count):
         """Add empty Answer records for <n> previously unassigned questions.
