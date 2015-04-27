@@ -1,6 +1,8 @@
 
 from django.views.generic import TemplateView, ListView, DetailView
 from django.views.generic.edit import FormView
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
@@ -31,6 +33,10 @@ class CandidateQuestionsView(TemplateView):
 
 class CandidateAnswer(FormView):
     form_class = AnswerForm
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, *args, **kwargs):
+        return super(CandidateAnswer, self).dispatch(*args, **kwargs)
 
     def get_form_kwargs(self):
         kwargs = super(CandidateAnswer, self).get_form_kwargs()
