@@ -8,7 +8,9 @@
 <p>{{ object_list.count }} candidates have answered questions</p>
 <ul>
 {% for candidate in object_list %}
-<li><a href="{%url "candidate_answer_detail" pk=candidate.popit_id %}">{{ candidate }}</a> ({{ candidate.party }} / {{ candidate.constituency_name }})
+<li><a href="{%url "candidate_answer_detail" pk=candidate.popit_id %}">{{ candidate }}</a> ({{ candidate.party }} / 
+<a href="{% url "constituency" candidate.constituency_id  %}">{{ candidate.constituency_name }}</a>
+)
 {% endfor %}
 </ul>
 
