@@ -1,7 +1,7 @@
 from urllib2 import urlopen, HTTPError, URLError
 import json
 
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.db import IntegrityError
 from django.http import Http404
 
@@ -54,10 +54,15 @@ def HomePageView(request):
     })
 
 def ConstituencyView(request, wmc_id):
-    wmc_name = get_object_or_404(Constituency, constituency_id=wmc_id).name
     candidates = Candidate.objects.filter(constituency_id=wmc_id)
+    if not candidates:
+        raise Http404("Constituency not found")
+    try:
+        wmc_name = Constituency.objects.get(constituency_id=wmc_id).name
+    except Constituency.DoesNotExist:
+        wmc_name = candidates.first().constituency_name
 
     return render(request, 'constituency.html', {
         'constituency': wmc_name,
         'candidates': candidates,
-        })
+    })
