@@ -32,5 +32,6 @@ class Command(BaseCommand):
             msg = make_email(candidate)
             conn.send_messages([msg])
             candidate.invited = timezone.now()
+            candidate.status = Candidate.INVITED
             candidate.save()
         conn.close()
