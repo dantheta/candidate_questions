@@ -395,6 +395,7 @@
     "modified": "2015-04-25T22:23:47.302Z",
     "constituency_name": "Brighton, Pavilion",
     "participating": true,
+    "status": 2,
     "constituency_id": "65787",
     "contact_address": "caroline.lucas@brightonandhovegreenparty.org.uk",
     "user": [
@@ -415,6 +416,7 @@
     "modified": "2015-04-21T21:50:41.301Z",
     "constituency_name": "Cities of London and Westminster",
     "participating": false,
+    "status": 0,
     "constituency_id": "65759",
     "contact_address": "mfield@westminsterconservatives.co.uk",
     "user": [
@@ -435,6 +437,7 @@
     "modified": "2015-04-21T21:50:41.286Z",
     "constituency_name": "Cities of London and Westminster",
     "participating": false,
+    "status": 0,
     "constituency_id": "65759",
     "contact_address": "b.brooks-gordon@bbk.ac.uk",
     "user": [
@@ -455,6 +458,7 @@
     "modified": "2015-04-25T22:23:43.054Z",
     "constituency_name": "Brighton, Pavilion",
     "participating": true,
+    "status": 2,
     "constituency_id": "65787",
     "contact_address": "chris.bowers@liberalbrighton.org",
     "user": [
@@ -475,6 +479,7 @@
     "modified": "2015-04-25T22:23:39.535Z",
     "constituency_name": "Brighton, Pavilion",
     "participating": true,
+    "status": 2,
     "constituency_id": "65787",
     "contact_address": "nigelcarter2@virginmedia.com",
     "user": [
@@ -495,6 +500,7 @@
     "modified": "2015-04-21T21:50:41.267Z",
     "constituency_name": "Brighton, Pavilion",
     "participating": false,
+    "status": 0,
     "constituency_id": "65787",
     "contact_address": "clarence@clarence4pavilion.com",
     "user": [
@@ -515,6 +521,7 @@
     "modified": "2015-04-25T22:23:35.047Z",
     "constituency_name": "Brighton, Pavilion",
     "participating": true,
+    "status": 2,
     "constituency_id": "65787",
     "contact_address": "PurnaSenBrightonLabour@gmail.com",
     "user": [
@@ -535,6 +542,7 @@
     "modified": "2015-04-21T21:50:41.310Z",
     "constituency_name": "Cities of London and Westminster",
     "participating": false,
+    "status": 0,
     "constituency_id": "65759",
     "contact_address": "info@citieslabour.org.uk",
     "user": [
@@ -555,6 +563,7 @@
     "modified": "2015-04-25T22:23:31.045Z",
     "constituency_name": "Brighton, Pavilion",
     "participating": true,
+    "status": 2,
     "constituency_id": "65787",
     "contact_address": "brightonpavilion@worldsocialism.org",
     "user": [
@@ -575,6 +584,7 @@
     "modified": "2015-04-21T21:50:41.314Z",
     "constituency_name": "Cities of London and Westminster",
     "participating": false,
+    "status": 0,
     "constituency_id": "65759",
     "contact_address": "hugh.small@greenparty.org.uk",
     "user": [
@@ -595,6 +605,7 @@
     "modified": "2015-04-21T21:50:41.305Z",
     "constituency_name": "Cities of London and Westminster",
     "participating": false,
+    "status": 0,
     "constituency_id": "65759",
     "contact_address": "",
     "user": [
@@ -615,6 +626,7 @@
     "modified": "2015-04-21T21:50:41.319Z",
     "constituency_name": "Cities of London and Westminster",
     "participating": false,
+    "status": 0,
     "constituency_id": "65759",
     "contact_address": "robert.stephenson@ukiplocal.org",
     "user": [
@@ -635,6 +647,7 @@
     "modified": "2015-04-25T22:23:22.138Z",
     "constituency_name": "Brighton, Pavilion",
     "participating": true,
+    "status": 2,
     "constituency_id": "65787",
     "contact_address": "nicholasyeomans7@hotmail.com",
     "user": [
@@ -655,6 +668,7 @@
     "modified": "2015-04-21T21:50:41.291Z",
     "constituency_name": "Cities of London and Westminster",
     "participating": false,
+    "status": 0,
     "constituency_id": "65759",
     "contact_address": "",
     "user": [
@@ -675,6 +689,7 @@
     "modified": "2015-04-21T21:50:41.296Z",
     "constituency_name": "Cities of London and Westminster",
     "participating": false,
+    "status": 0,
     "constituency_id": "65759",
     "contact_address": "",
     "user": [

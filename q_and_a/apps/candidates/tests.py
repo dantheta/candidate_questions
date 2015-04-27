@@ -25,7 +25,7 @@ class TestQuestionAssignment(TestCase):
         self.q1.save()
 
         # create a candidate
-        self.candidate = Candidate(name='Terry', participating=True, popit_id=1234)
+        self.candidate = Candidate(name='Terry', status=Candidate.PARTICIPATING, popit_id=1234)
         self.candidate.save()
         # post-save hook on candidate will automatically assign q1
 
@@ -99,7 +99,7 @@ class ReminderTestCase(TestCase):
         c1 = Candidate(popit_id=1235,
             name='Bob',
             contact_address='bob@example.com',
-            participating=True
+            status=Candidate.PARTICIPATING
             )
         c1.save()
         self.candidate = c1
